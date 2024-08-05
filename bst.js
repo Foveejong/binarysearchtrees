@@ -141,6 +141,44 @@ class Tree {
         if (root.right) this.postOrder(root.right, cb);
         cb(root.value);
     }
+
+    height(root) {
+        if (root === null) return 0;
+        let left = 0,
+            right = 0;
+        if (root.left) {
+            left = 1 + this.height(root.left);
+        }
+        if (root.right) {
+            right = 1 + this.height(root.right);
+        }
+        return Math.max(left, right);
+
+        // let height = 0;
+        // let roots = [root];
+        // while (roots.length > 0) {
+        //     let nodeCount = roots.length;
+        //     for (let i = 0; i < nodeCount; i++) {
+        //         let item = roots.shift();
+        //         if (item.right !== null) roots.push(item.right);
+        //         if (item.left !== null) roots.push(item.left);
+        //     }
+        //     if (roots.length !== 0) height++;
+        // }
+        // return height;
+    }
+
+    depth(node, root) {
+        if (node === null) return 'no such node';
+
+        if (root.value < node.value && root.right != null) {
+            return 1 + this.depth(node, root.right);
+        } else if (root.value > node.value && root.left !== null) {
+            return 1 + this.depth(node, root.left);
+        } else {
+            return 0;
+        }
+    }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -159,5 +197,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 const t1 = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 t1.insert(t1.root, 10);
 t1.insert(t1.root, 11);
-t1.postOrder(t1.root, console.log);
+t1.insert(t1.root, 1156);
+t1.insert(t1.root, 112);
+t1.insert(t1.root, 118);
 prettyPrint(t1.root);
