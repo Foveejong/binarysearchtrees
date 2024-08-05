@@ -86,6 +86,61 @@ class Tree {
         }
         return root;
     }
+
+    find(root, value) {
+        if (root === null) return 'node not in tree';
+
+        if (value < root.value) {
+            return this.find(root.left, value);
+        } else if (value > root.value) {
+            return this.find(root.right, value);
+        } else {
+            return root;
+        }
+    }
+
+    levelorder(root, cb) {
+        if (!cb) throw new Error('No callback function!');
+        if (root === null) return;
+        // if (root.right) this.levelorder(cb, root.right);
+        // if (root.left) this.levelorder(cb, root.left);
+        // cb(root.value);
+
+        let queue = [root];
+        while (queue.length > 0) {
+            let item = queue.shift();
+            cb(item.value);
+            if (item.left !== null) queue.push(item.left);
+            if (item.right !== null) queue.push(item.right);
+        }
+    }
+
+    inOrder(root, cb) {
+        if (!cb) throw new Error('No callback function!');
+        if (root === null) return;
+
+        if (root.left) this.inOrder(root.left, cb);
+        cb(root.value);
+        if (root.right) this.inOrder(root.right, cb);
+    }
+
+    preOrder(root, cb) {
+        if (!cb) throw new Error('No callback function!');
+        if (root === null) return;
+
+        cb(root.value);
+        if (root.left) this.preOrder(root.left, cb);
+        if (root.right) this.preOrder(root.right, cb);
+    }
+
+    postOrder(root, cb) {
+        if (!cb) throw new Error('No callback function!');
+        if (root === null) return;
+
+        if (root.left) this.postOrder(root.left, cb);
+        if (root.right) this.postOrder(root.right, cb);
+        cb(root.value);
+    }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -104,5 +159,5 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 const t1 = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 t1.insert(t1.root, 10);
 t1.insert(t1.root, 11);
-t1.deleteItem(t1.root, 8);
+t1.postOrder(t1.root, console.log);
 prettyPrint(t1.root);
