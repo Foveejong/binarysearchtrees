@@ -41,12 +41,13 @@ class Tree {
     insert(root, value) {
         // base case
         if (root === null) {
+            this.arr.push(value);
             return new Node(value);
         }
 
         if (value === root.value) {
-            console.log('duplicate!');
-            return;
+            console.log(`${value} is duplicated!`);
+            return root;
         }
 
         if (value < root.value) {
@@ -68,6 +69,7 @@ class Tree {
             root.right = this.deleteItem(root.right, value);
         } else {
             // found the node
+            this.arr.splice(this.arr.indexOf(value), 1);
             if (root.left === null && root.right === null) {
                 // case 1: leaf node
                 return null;
@@ -115,13 +117,14 @@ class Tree {
         }
     }
 
-    inOrder(root, cb) {
-        if (!cb) throw new Error('No callback function!');
+    inOrder(root, cb, arr = []) {
+        // if (!cb) throw new Error('No callback function!');
         if (root === null) return;
 
-        if (root.left) this.inOrder(root.left, cb);
-        cb(root.value);
-        if (root.right) this.inOrder(root.right, cb);
+        if (root.left) this.inOrder(root.left, cb, arr);
+        cb ? cb(root.value) : arr.push(root.value);
+        if (root.right) this.inOrder(root.right, cb, arr);
+        return arr;
     }
 
     preOrder(root, cb) {
@@ -179,6 +182,25 @@ class Tree {
             return 0;
         }
     }
+
+    isBalanced() {
+        if (
+            Math.abs(
+                this.height(this.root.left) - this.height(this.root.right)
+            ) > 1
+        ) {
+            return false;
+        }
+        return true;
+    }
+
+    rebalance() {
+        // provide sorted arr using inorder traversal of current root
+        this.arr = this.inOrder(this.root);
+
+        // provide new root
+        this.root = this.buildTree(this.arr);
+    }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -194,10 +216,4 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
     }
 };
 
-const t1 = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-t1.insert(t1.root, 10);
-t1.insert(t1.root, 11);
-t1.insert(t1.root, 1156);
-t1.insert(t1.root, 112);
-t1.insert(t1.root, 118);
-prettyPrint(t1.root);
+export { Node, Tree, prettyPrint };
